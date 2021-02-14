@@ -1,0 +1,10 @@
+{
+    "name": "taito/linqinp",
+    "authors": [
+        {
+            "name": "taito",
+            "email": "hanshin.abingdon@gmail.com"
+        }
+    ],
+    "require": {}
+}
