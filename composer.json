@@ -11,6 +11,11 @@
       "Linqinp\\": "src"
     }
   },
+  "autoload-dev":{
+    "psr-4": {
+      "LinqinpTest\\": "test"
+    }
+  },
   "require-dev": {
     "phpunit/phpunit": "^9.5"
   }
