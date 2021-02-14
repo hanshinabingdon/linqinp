@@ -1,10 +1,10 @@
 <?php
 
-namespace Linqinp\Model;
+namespace Linqinp;
 
 /**
  * Class LinqinpObject
- * @package Linqinp\Model
+ * @package Linqinp
  */
 class LinqinpObject
 {

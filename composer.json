@@ -8,7 +8,7 @@
   ],
   "autoload":{
     "psr-4": {
-      "Linqinp\\Model\\": "src/Model"
+      "Linqinp\\": "src"
     }
   },
   "require": {}
