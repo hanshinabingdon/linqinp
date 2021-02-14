@@ -1,2 +1,2 @@
-# linp
-linq in php
+# lininp
+link in php
