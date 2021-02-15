@@ -48,12 +48,41 @@ class LinqinpTest extends TestCase
         $set01 = [$case01, $expected01];
 
         $case02 = $this->createGenerator(2);
-        $set02 = [$case02,$case02];
+        $set02 = [$case02, $case02];
 
         return [
             [$set01],
             [$set02]
         ];
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function select(): void
+    {
+        $seed01 = [1, 2];
+        $case01 = function (int $x) {
+            return $x + 1;
+        };
+        $result01 = Linqinp::from($seed01)
+            ->select($case01)
+            ->toArray();
+        $this->assertSame([2, 3], $result01);
+
+        $seed02 = [10 => 'a', 11 => 'b'];
+        $case02 = function (string $x, int $key) {
+            return "The answer is {$x} and {$key}.";
+        };
+        $result02 = Linqinp::from($seed02)
+            ->select($case02)
+            ->toArray();
+        $ex02 = [
+            10 => "The answer is a and 10.",
+            11 => "The answer is b and 11."
+        ];
+        $this->assertSame($ex02, $result02);
     }
 
     /**

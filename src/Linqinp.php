@@ -5,6 +5,7 @@ namespace Linqinp;
 use ArrayIterator;
 use Generator;
 use Iterator;
+use phpDocumentor\Reflection\Types\This;
 
 /**
  * Class Linqinp
@@ -39,8 +40,8 @@ class Linqinp
      */
     public function select(callable $func): Linqinp
     {
-        $this->target = $this->doSelect($func);
-        return $this;
+        $target = $this->doSelect($func);
+        return new Linqinp($target);
     }
 
     /**
@@ -49,7 +50,9 @@ class Linqinp
      */
     private function doSelect(callable $func): Generator
     {
-        yield $func();
+        foreach ($this->target as $key => $value) {
+            yield $key => $func($value, $key);
+        }
     }
 
     /**
@@ -76,6 +79,11 @@ class Linqinp
      */
     public function toArray(): array
     {
-        return iterator_to_array($this->target);
+//        $tmp =[];
+//        foreach ($this->target as $key =>$value) {
+//            $tmp[$key] = $value;
+//        }
+//        return $tmp;
+        return iterator_to_array($this->target, true);
     }
 }
