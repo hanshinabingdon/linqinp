@@ -48,8 +48,7 @@ class LinqinpTest extends TestCase
         $set01 = [$case01, $expected01];
 
         $case02 = $this->createGenerator(2);
-        $expected02 = $case02;
-        $set02 = [$case02, $expected02];
+        $set02 = [$case02,$case02];
 
         return [
             [$set01],
