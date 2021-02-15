@@ -6,17 +6,20 @@
       "email": "hanshin.abingdon@gmail.com"
     }
   ],
-  "autoload":{
+  "autoload": {
     "psr-4": {
       "Linqinp\\": "src"
     }
   },
-  "autoload-dev":{
+  "autoload-dev": {
     "psr-4": {
       "LinqinpTest\\": "test"
     }
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5"
+  },
+  "scripts": {
+    "phpunit": "php vendor/phpunit/phpunit/phpunit --bootstrap vendor/autoload.php"
   }
 }
