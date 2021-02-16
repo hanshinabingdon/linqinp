@@ -58,45 +58,59 @@ class LinqinpTest extends TestCase
 
     /**
      * @test
+     * @param array $set
      * @return void
+     * @dataProvider selectProvider
      */
-    public function select(): void
+    public function select(array $set): void
+    {
+        list($case, $expected) = $set;
+        list($seed, $func) = $case;
+
+        $result = Linqinp::from($seed)
+            ->select($func)
+            ->toArray();
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function selectProvider(): array
     {
         $seed01 = [1, 2];
-        $case01 = function (int $x) {
+        $func01 = function (int $x) {
             return $x + 1;
         };
-        $result01 = Linqinp::from($seed01)
-            ->select($case01)
-            ->toArray();
-        $this->assertSame([2, 3], $result01);
+        $ex01 = [2, 3];
+        $set01 = [[$seed01, $func01], $ex01];
 
         $seed02 = [10 => 'a', 11 => 'b'];
-        $case02 = function (string $x, int $key) {
-            return "The answer is {$x} and {$key}.";
+        $func02 = function (string $x, int $key) {
+            return "The value is {$x}. The key is {$key}.";
         };
-        $result02 = Linqinp::from($seed02)
-            ->select($case02)
-            ->toArray();
         $ex02 = [
-            10 => "The answer is a and 10.",
-            11 => "The answer is b and 11."
+            10 => "The value is a. The key is 10.",
+            11 => "The value is b. The key is 11."
         ];
-        $this->assertSame($ex02, $result02);
+        $set02 = [[$seed02, $func02], $ex02];
 
         $seed03 = ['key1' => 'value1', 'key2' => 'value2'];
-        $case03 = function (string $x, string &$y) {
+        $func03 = function (string $x, string &$y) {
             $y = "new {$y}";
             return "The value is new {$x}. The key is {$y}.";
         };
-        $result03 = Linqinp::from($seed03)
-            ->select($case03)
-            ->toArray();
         $ex03 = [
             'new key1' => "The value is new value1. The key is new key1.",
             'new key2' => "The value is new value2. The key is new key2."
         ];
-        $this->assertSame($ex03, $result03);
+        $set03 = [[$seed03, $func03], $ex03];
+
+        return [
+            [$set01],
+            [$set02],
+            [$set03],
+        ];
     }
 
     /**
