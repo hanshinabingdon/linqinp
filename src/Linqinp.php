@@ -80,6 +80,7 @@ class Linqinp
      */
     private function doWhere(Iterator $target, callable $func): Generator
     {
+        $newKeys = [];
         foreach ($target as $key => $value) {
             $tmp = $func($value, $key);
 
@@ -91,7 +92,12 @@ class Linqinp
                 continue;
             }
 
-            yield $key => $tmp;
+            if (in_array($key, $newKeys, true)) {
+                throw new InvalidArgumentException('The key is duplicated.');
+            }
+
+            $newKeys[] = $key;
+            yield $key => $value;
         }
     }
 }
