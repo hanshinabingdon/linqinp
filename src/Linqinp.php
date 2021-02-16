@@ -78,11 +78,6 @@ class Linqinp
      */
     public function toArray(): array
     {
-//        $tmp =[];
-//        foreach ($this->target as $key =>$value) {
-//            $tmp[$key] = $value;
-//        }
-//        return $tmp;
         return iterator_to_array($this->target, true);
     }
 }
