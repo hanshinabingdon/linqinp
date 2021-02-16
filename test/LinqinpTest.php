@@ -83,6 +83,20 @@ class LinqinpTest extends TestCase
             11 => "The answer is b and 11."
         ];
         $this->assertSame($ex02, $result02);
+
+        $seed03 = ['key1' => 'value1', 'key2' => 'value2'];
+        $case03 = function (string $x, string &$y) {
+            $y = "new {$y}";
+            return "The value is new {$x}. The key is {$y}.";
+        };
+        $result03 = Linqinp::from($seed03)
+            ->select($case03)
+            ->toArray();
+        $ex03 = [
+            'new key1' => "The value is new value1. The key is new key1.",
+            'new key2' => "The value is new value2. The key is new key2."
+        ];
+        $this->assertSame($ex03, $result03);
     }
 
     /**
