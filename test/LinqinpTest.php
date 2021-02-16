@@ -121,4 +121,67 @@ class LinqinpTest extends TestCase
             [$set03],
         ];
     }
+
+    /**
+     * @test
+     * @param array $set
+     * @return void
+     * @dataProvider whereProvider
+     */
+    public function where(array $set): void
+    {
+        list($case, $expected) = $set;
+        list($seed, $func) = $case;
+
+        $result = Linqinp::from($seed)
+            ->where($func)
+            ->toArray();
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function whereProvider(): array
+    {
+        $seed01 = [1, 2, 3];
+        $func01 = function (int $x) {
+            return $x > 1;
+        };
+        $ex01 = [1 => 2, 2 => 3];
+        $set01 = [[$seed01, $func01], $ex01];
+
+        $seed02 = [10 => 'a', 11 => 'b', 12 => 'c'];
+        $func02 = function (string $x, int $y) {
+            return $y > 10;
+        };
+        $ex02 = [
+            11 => "b",
+            12 => "c"
+        ];
+        $set02 = [[$seed02, $func02], $ex02];
+
+        $seed03 = [100 => 10, 111 => 11];
+        $func03 = function (int $x, int &$y) {
+            $y = $y * $x;
+            return true;
+        };
+        $ex03 = [1000 => 10, 1221 => 11];
+        $set03 = [[$seed03, $func03], $ex03];
+
+        $seed04 = [100 => 10, 111 => 11];
+        $func04 = function () {
+            return false;
+        };
+        $ex04 = [];
+        $set04 = [[$seed04, $func04], $ex04];
+
+        return [
+            [$set01],
+            [$set02],
+            [$set03],
+            [$set04],
+        ];
+    }
+
 }
