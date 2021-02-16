@@ -57,6 +57,15 @@ class LinqinpTest extends TestCase
     }
 
     /**
+     * @param mixed $value
+     * @return Generator
+     */
+    public function createGenerator(mixed $value): Generator
+    {
+        yield $value;
+    }
+
+    /**
      * @test
      * @param array $set
      * @return void
@@ -111,14 +120,5 @@ class LinqinpTest extends TestCase
             [$set02],
             [$set03],
         ];
-    }
-
-    /**
-     * @param mixed $value
-     * @return Generator
-     */
-    public function createGenerator(mixed $value): Generator
-    {
-        yield $value;
     }
 }
