@@ -4,6 +4,7 @@ namespace Linqinp;
 
 use ArrayIterator;
 use Generator;
+use InvalidArgumentException;
 use Iterator;
 
 /**
@@ -31,6 +32,14 @@ class Linqinp
         }
 
         return new Linqinp($target);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return iterator_to_array($this->target, true);
     }
 
     /**
@@ -71,14 +80,18 @@ class Linqinp
      */
     private function doWhere(Iterator $target, callable $func): Generator
     {
-        yield $func();
-    }
+        foreach ($target as $key => $value) {
+            $tmp = $func($value, $key);
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return iterator_to_array($this->target, true);
+            if (!is_bool($tmp)) {
+                throw new InvalidArgumentException('The callable return value type must be bool.');
+            }
+
+            if (!$tmp) {
+                continue;
+            }
+
+            yield $key => $tmp;
+        }
     }
 }
