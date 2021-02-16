@@ -39,16 +39,17 @@ class Linqinp
      */
     public function select(callable $func): Linqinp
     {
-        return new Linqinp($this->doSelect($func));
+        return new Linqinp($this->doSelect($this->target, $func));
     }
 
     /**
+     * @param Iterator $target
      * @param callable $func
      * @return Generator
      */
-    private function doSelect(callable $func): Generator
+    private function doSelect(Iterator $target, callable $func): Generator
     {
-        foreach ($this->target as $key => $value) {
+        foreach ($target as $key => $value) {
             $tmp = $func($value, $key);
             yield $key => $tmp;
         }
@@ -60,15 +61,15 @@ class Linqinp
      */
     public function where(callable $func): Linqinp
     {
-        $this->target = $this->doWhere($func);
-        return $this;
+        return new Linqinp($this->doWhere($this->target, $func));
     }
 
     /**
+     * @param Iterator $target
      * @param callable $func
      * @return Generator
      */
-    private function doWhere(callable $func): Generator
+    private function doWhere(Iterator $target, callable $func): Generator
     {
         yield $func();
     }
