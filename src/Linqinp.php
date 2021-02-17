@@ -58,8 +58,15 @@ class Linqinp
      */
     private function doSelect(Iterator $target, callable $func): Generator
     {
+        $keys = [];
         foreach ($target as $key => $value) {
             $tmp = $func($value, $key);
+
+            if (in_array($key, $keys, true)) {
+                throw new InvalidArgumentException(LinqinpLiteral::$errorMessageKeyDuplicate);
+            }
+
+            $keys[] = $key;
             yield $key => $tmp;
         }
     }
@@ -80,7 +87,7 @@ class Linqinp
      */
     private function doWhere(Iterator $target, callable $func): Generator
     {
-        $newKeys = [];
+        $keys = [];
         foreach ($target as $key => $value) {
             $tmp = $func($value, $key);
 
@@ -92,12 +99,20 @@ class Linqinp
                 continue;
             }
 
-            if (in_array($key, $newKeys, true)) {
-                throw new InvalidArgumentException('The key is duplicated.');
+            if (in_array($key, $keys, true)) {
+                throw new InvalidArgumentException(LinqinpLiteral::$errorMessageKeyDuplicate);
             }
 
-            $newKeys[] = $key;
+            $keys[] = $key;
             yield $key => $value;
         }
+    }
+
+    /**
+     * @param callable $func
+     * @return mixed
+     */
+    public function single(callable $func): mixed
+    {
     }
 }
