@@ -6,6 +6,7 @@ use ArrayIterator;
 use Generator;
 use InvalidArgumentException;
 use Iterator;
+use TypeError;
 
 /**
  * Class Linqinp
@@ -63,7 +64,7 @@ class Linqinp
             $tmp = $func($value, $key);
 
             if (in_array($key, $keys, true)) {
-                throw new InvalidArgumentException(LinqinpLiteral::$errorMessageKeyDuplicate);
+                throw new InvalidArgumentException(LinqinpLiteral::$errorKeyDuplicate);
             }
 
             $keys[] = $key;
@@ -92,7 +93,7 @@ class Linqinp
             $tmp = $func($value, $key);
 
             if (!is_bool($tmp)) {
-                throw new InvalidArgumentException('The callable return value type must be bool.');
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnValueType);
             }
 
             if (!$tmp) {
@@ -100,7 +101,7 @@ class Linqinp
             }
 
             if (in_array($key, $keys, true)) {
-                throw new InvalidArgumentException(LinqinpLiteral::$errorMessageKeyDuplicate);
+                throw new InvalidArgumentException(LinqinpLiteral::$errorKeyDuplicate);
             }
 
             $keys[] = $key;
