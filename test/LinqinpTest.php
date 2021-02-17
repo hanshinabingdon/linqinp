@@ -4,7 +4,9 @@ namespace LinqinpTest;
 
 use ArrayIterator;
 use Generator;
+use InvalidArgumentException;
 use Linqinp\Linqinp;
+use Linqinp\LinqinpLiteral;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Iterator;
@@ -120,6 +122,26 @@ class LinqinpTest extends TestCase
             [$set02],
             [$set03],
         ];
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function selectError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(LinqinpLiteral::$errorKeyDuplicate);
+
+        $seed01 = [1, 2, 3];
+        $func01 = function (int $x, int &$y) {
+            $y = $y * 0;
+            return $x;
+        };
+
+        Linqinp::from($seed01)
+            ->select($func01)
+            ->toArray();
     }
 
     /**
