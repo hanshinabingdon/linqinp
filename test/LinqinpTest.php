@@ -10,6 +10,7 @@ use Linqinp\LinqinpLiteral;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Iterator;
+use TypeError;
 
 /**
  * Class LinqinpTest
@@ -232,4 +233,61 @@ class LinqinpTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     * @dataProvider whereErrorProvider
+     * @param array $set
+     * @return void
+     */
+    public function whereError(array $set): void
+    {
+        list($case, $ex) = $set;
+
+        list($exErrorClass, $exErrorMessage) = $ex;
+
+        $this->expectException($exErrorClass);
+        $this->expectExceptionMessage($exErrorMessage);
+
+        list($seed, $func) = $case;
+
+        Linqinp::from($seed)
+            ->where($func)
+            ->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function whereErrorProvider(): array
+    {
+        $seed01 = [1, 2, 3];
+        $func01 = function (int $x, int &$y) {
+            $y = $y * 0;
+            return true;
+        };
+        $exErrorClass01 = InvalidArgumentException::class;
+        $exErrorMessage01 = LinqinpLiteral::$errorKeyDuplicate;
+        $set01 = [
+            [$seed01, $func01],
+            [$exErrorClass01, $exErrorMessage01]
+        ];
+
+        $seed02 = [1, 2, 3];
+        $func02 = function (int $x) {
+            return 1;
+        };
+        $exErrorClass02 = TypeError::class;
+        $exErrorMessage02 = LinqinpLiteral::$errorCallableReturnValueType;
+
+        $set02 = [
+            [$seed02, $func02],
+            [$exErrorClass02, $exErrorMessage02]
+        ];
+
+
+        return [
+            [$set01],
+            [$set02]
+        ];
+    }
 }
