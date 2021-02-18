@@ -126,22 +126,48 @@ class LinqinpTest extends TestCase
 
     /**
      * @test
+     * @dataProvider selectErrorProvider
+     * @param array $set
      * @return void
      */
-    public function selectError(): void
+    public function selectError(array $set): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(LinqinpLiteral::$errorKeyDuplicate);
+        list($case, $ex) = $set;
 
+        list($exErrorClass, $exErrorMessage) = $ex;
+
+        $this->expectException($exErrorClass);
+        $this->expectExceptionMessage($exErrorMessage);
+
+        list($seed, $func) = $case;
+
+        Linqinp::from($seed)
+            ->select($func)
+            ->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function selectErrorProvider(): array
+    {
         $seed01 = [1, 2, 3];
         $func01 = function (int $x, int &$y) {
             $y = $y * 0;
             return $x;
         };
 
-        Linqinp::from($seed01)
-            ->select($func01)
-            ->toArray();
+        $exErrorClass01 = InvalidArgumentException::class;
+        $exErrorMessage01 = LinqinpLiteral::$errorKeyDuplicate;
+
+        $set01 = [
+            [$seed01, $func01],
+            [$exErrorClass01, $exErrorMessage01]
+        ];
+
+        return [
+            [$set01]
+        ];
     }
 
     /**
