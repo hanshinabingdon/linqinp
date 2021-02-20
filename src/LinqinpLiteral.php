@@ -2,6 +2,8 @@
 
 namespace Linqinp;
 
+use phpDocumentor\Reflection\Types\Scalar;
+
 /**
  * Class LinqinpLiteral
  * @package Linqinp
@@ -10,6 +12,11 @@ class LinqinpLiteral
 {
     /** @var string */
     public static string $errorKeyDuplicate = 'The key is duplicated.';
+
+    /** @var string */
+    public static string $errorNoValue = 'No value meets criteria.';
+
+    public static string $errorTooMuchValues ='Too much values meet criteria';
 
     /** @var string */
     private const errorCallableReturnTypeBase = 'The callable return value type must be ';

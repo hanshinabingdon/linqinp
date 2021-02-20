@@ -115,5 +115,42 @@ class Linqinp
      */
     public function single(callable $func): mixed
     {
+        $tmp = $this->singleOrDefault($func);
+        if ($tmp === null) {
+            throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
+        }
+        return $tmp;
+    }
+
+    /**
+     * @param callable $func
+     * @return mixed
+     */
+    public function singleOrDefault(callable $func): mixed
+    {
+        $targets = [];
+        foreach ($this->target as $key => $value) {
+            $tmp = $func($value, $key);
+
+            if (!is_bool($tmp)) {
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnTypeBool);
+            }
+
+            if (!$tmp) {
+                continue;
+            }
+
+            $targets[] = $value;
+        }
+
+        if (empty($targets)) {
+            return null;
+        }
+
+        if (count($targets) > 1) {
+            throw new InvalidArgumentException(LinqinpLiteral::$errorTooMuchValues);
+        }
+
+        return array_shift($targets);
     }
 }
