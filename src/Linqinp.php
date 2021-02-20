@@ -93,7 +93,7 @@ class Linqinp
             $tmp = $func($value, $key);
 
             if (!is_bool($tmp)) {
-                throw new TypeError(LinqinpLiteral::$errorCallableReturnValueType);
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnTypeBool);
             }
 
             if (!$tmp) {

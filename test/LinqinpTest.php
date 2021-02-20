@@ -277,7 +277,7 @@ class LinqinpTest extends TestCase
             return 1;
         };
         $exErrorClass02 = TypeError::class;
-        $exErrorMessage02 = LinqinpLiteral::$errorCallableReturnValueType;
+        $exErrorMessage02 = LinqinpLiteral::$errorCallableReturnTypeBool;
 
         $set02 = [
             [$seed02, $func02],

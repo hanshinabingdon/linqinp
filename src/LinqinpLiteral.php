@@ -12,5 +12,11 @@ class LinqinpLiteral
     public static string $errorKeyDuplicate = 'The key is duplicated.';
 
     /** @var string */
-    public static string $errorCallableReturnValueType = 'The callable return value type must be bool.';
+    private const errorCallableReturnTypeBase = 'The callable return value type must be ';
+
+    /** @var string */
+    public static string $errorCallableReturnTypeInt = self::errorCallableReturnTypeBase . 'int,';
+
+    /** @var string */
+    public static string $errorCallableReturnTypeBool = self::errorCallableReturnTypeBase . 'bool,';
 }
