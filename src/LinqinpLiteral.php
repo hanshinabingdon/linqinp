@@ -2,8 +2,6 @@
 
 namespace Linqinp;
 
-use phpDocumentor\Reflection\Types\Scalar;
-
 /**
  * Class LinqinpLiteral
  * @package Linqinp
@@ -16,6 +14,7 @@ class LinqinpLiteral
     /** @var string */
     public static string $errorNoValue = 'No value meets criteria.';
 
+    /** @var string */
     public static string $errorTooMuchValues ='Too much values meet criteria';
 
     /** @var string */
