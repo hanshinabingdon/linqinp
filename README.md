@@ -1,11 +1,11 @@
 # linqinp
 
-linqinp is for using something like C # LINQ in php.<br/>
+linqinp is for using something like C # LINQ in php.
 
 ## features
 
 - You can operate iterator by your specified callble.
-- Ypu can use not only value but also key in your making callable.
+- You can use not only value but also key in your making callable.
 - You can modify key for return value.
 
 ## sample
@@ -18,7 +18,7 @@ $target = [1, 2, 3];
 // sample01 = [2, 4, 6];
 $sample01 = Linqinp::from($target)
   ->select(
-    function (int $value) { // x is value
+    function (int $value) {
       return $value * 2;
     }
   )->toArray();
