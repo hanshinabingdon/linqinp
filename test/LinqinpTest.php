@@ -202,7 +202,7 @@ class LinqinpTest extends TestCase
 
         $seed02 = [10 => 'a', 11 => 'b', 12 => 'c'];
         $func02 = function (string $x, int $y) {
-            return $y > 10;
+            return is_string($x) && $y > 10;
         };
         $ex02 = [
             11 => "b",
@@ -262,7 +262,7 @@ class LinqinpTest extends TestCase
     {
         $seed01 = [1, 2, 3];
         $func01 = function (int $x, int &$y) {
-            $y = $y * 0;
+            $y = $x * $y * 0;
             return true;
         };
         $exErrorClass01 = InvalidArgumentException::class;
@@ -274,7 +274,7 @@ class LinqinpTest extends TestCase
 
         $seed02 = [1, 2, 3];
         $func02 = function (int $x) {
-            return 1;
+            return $x * 0 + 1;
         };
         $exErrorClass02 = TypeError::class;
         $exErrorMessage02 = LinqinpLiteral::$errorCallableReturnTypeBool;
@@ -321,7 +321,7 @@ class LinqinpTest extends TestCase
 
         $seed02 = [10 => 'a', 11 => 'b', 12 => 'c'];
         $func02 = function (string $x, int $y) {
-            return $y > 11;
+            return is_string($x) && $y > 11;
         };
         $ex02 = 'c';
         $set02 = [[$seed02, $func02], $ex02];
@@ -367,7 +367,7 @@ class LinqinpTest extends TestCase
     public function singleErrorProvider(): array
     {
         $seed01 = [1, 2, 3];
-        $func01 = function (int $x, int &$y) {
+        $func01 = function (int $x, int $y) {
             return $x + $y;
         };
         $exErrorClass01 = TypeError::class;
