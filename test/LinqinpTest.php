@@ -412,6 +412,119 @@ class LinqinpTest extends TestCase
      * @test
      * @param array $set
      * @return void
+     * @dataProvider singleOrDefaultProvider
+     */
+    public function singleOrDefault(array $set): void
+    {
+        list($case, $expected) = $set;
+        list($seed, $func) = $case;
+
+        $result = Linqinp::from($seed)
+            ->singleOrDefault($func);
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function singleOrDefaultProvider(): array
+    {
+        $seed01 = [1, 2, 3];
+        $func01 = function (int $x) {
+            return $x > 1 && $x < 3;
+        };
+        $ex01 = 2;
+        $set01 = [[$seed01, $func01], $ex01];
+
+        $seed02 = [10 => 'a', 11 => 'b', 12 => 'c'];
+        $func02 = function (string $x, int $y) {
+            return is_string($x) && $y > 11;
+        };
+        $ex02 = 'c';
+        $set02 = [[$seed02, $func02], $ex02];
+
+        $seed03 = [null, 1, 2];
+        $func03 = function (?int $x) {
+            return $x === null;
+        };
+        $ex03 = null;
+        $set03 = [[$seed03, $func03], $ex03];
+
+        $seed04 = [1, 2, 3];
+        $func04 = function (int $x, int $y) {
+            return !is_int($x) && !is_int($y);
+        };
+        $ex04 = null;
+
+        $set04 = [[$seed04, $func04], $ex04];
+
+        return [
+            [$set01],
+            [$set02],
+            [$set03],
+            [$set04],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider singleOrDefaultErrorProvider
+     * @param array $set
+     * @return void
+     */
+    public function singleOrDefaultError(array $set): void
+    {
+        list($case, $ex) = $set;
+
+        list($exErrorClass, $exErrorMessage) = $ex;
+
+        $this->expectException($exErrorClass);
+        $this->expectExceptionMessage($exErrorMessage);
+
+        list($seed, $func) = $case;
+
+        Linqinp::from($seed)
+            ->singleOrDefault($func);
+    }
+
+    /**
+     * @return array
+     */
+    public function singleOrDefaultErrorProvider(): array
+    {
+        $seed01 = [1, 2, 3];
+        $func01 = function (int $x, int $y) {
+            return $x + $y;
+        };
+        $exErrorClass01 = TypeError::class;
+        $exErrorMessage01 = LinqinpLiteral::$errorCallableReturnTypeBool;
+        $set01 = [
+            [$seed01, $func01],
+            [$exErrorClass01, $exErrorMessage01]
+        ];
+
+        $seed02 = [1, 2, 3];
+        $func02 = function (int $x) {
+            return is_int($x);
+        };
+        $exErrorClass02 = InvalidArgumentException::class;
+        $exErrorMessage02 = LinqinpLiteral::$errorTooMuchValues;
+
+        $set02 = [
+            [$seed02, $func02],
+            [$exErrorClass02, $exErrorMessage02]
+        ];
+
+        return [
+            [$set01],
+            [$set02],
+        ];
+    }
+
+    /**
+     * @test
+     * @param array $set
+     * @return void
      * @dataProvider firstProvider
      */
     public function first(array $set): void
