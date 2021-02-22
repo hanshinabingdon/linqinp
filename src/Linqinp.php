@@ -149,10 +149,6 @@ class Linqinp
             $targets[] = $value;
         }
 
-        if (empty($targets)) {
-            return null;
-        }
-
         if (count($targets) > 1) {
             throw new InvalidArgumentException(LinqinpLiteral::$errorTooMuchValues);
         }
