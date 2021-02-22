@@ -8,6 +8,9 @@ linqinp is for using something like C # LINQ in php.
 - You can use not only value but also key in your making callable.
 - You can modify key for return value.
 
+## dependencies
+- php:^8.0.2
+
 ## sample
 
 ```php
