@@ -3,6 +3,7 @@
 namespace LinqinpTest;
 
 use ArrayIterator;
+use EmptyIterator;
 use Generator;
 use InvalidArgumentException;
 use Linqinp\Linqinp;
@@ -61,7 +62,13 @@ class LinqinpTest extends TestCase
         $prop = $ref->getProperty('target');
         $prop->setAccessible(true);
 
-        foreach ($prop->getValue($target) as $key => $value) {
+        $targetValue = iterator_to_array($prop->getValue($target));
+        if (empty($targetValue)) {
+            $this->expectNotToPerformAssertions();
+            return;
+        }
+
+        foreach ($targetValue as $key => $value) {
             $this->assertSame($expected->key(), $key);
             $this->assertSame($expected->current(), $value);
         }
@@ -72,16 +79,27 @@ class LinqinpTest extends TestCase
      */
     public function fromProvider(): array
     {
-        $case01 = [1];
+        $case01 = [];
         $expected01 = new ArrayIterator($case01);
         $set01 = [$case01, $expected01];
 
-        $case02 = $this->createGenerator(2);
-        $set02 = [$case02, $case02];
+        $case02 = [1];
+        $expected02 = new ArrayIterator($case02);
+        $set02 = [$case02, $expected02];
+
+        $case03 = new EmptyIterator();
+        $ex03 = new EmptyIterator();
+        $set03 = [$case03, $ex03];
+
+        $case04 = $this->createGenerator(2);
+        $ex04 = $this->createGenerator(2);
+        $set04 = [$case04, $ex04];
 
         return [
-            [$set01],
-            [$set02]
+            'empty_array' => [$set01],
+            'array' => [$set02],
+            'empty_generator' => [$set03],
+            'generator' => [$set04],
         ];
     }
 
