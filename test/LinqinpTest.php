@@ -18,19 +18,31 @@ use TypeError;
  */
 class LinqinpTest extends TestCase
 {
-    /**
-     * --- case_list ---
-     * empty
-     * use_value
-     * use_key
-     * use_both
-     * modify_key
-     * duplicate_key
-     * return_type_incorrect
-     * value_nothing
-     * value_too_many
-     * ---
-     */
+    #region case list
+    /** @var string */
+    private static string $caseEmpty = 'empty';
+
+    /** @var string */
+    private static string $caseUseValue = 'use_value';
+
+    /** @var string */
+    private static string $caseUseKey = 'use_key';
+
+    /** @var string */
+    private static string $caseModifyKey = 'modify_key';
+
+    /** @var string */
+    private static string $caseDuplicateKey = 'duplicateKey';
+
+    /** @var string */
+    private static string $caseReturnTypeIncorrect = 'return_type_incorrect';
+
+    /** @var string */
+    private static string $caseValueNothing = 'value_nothing';
+
+    /** @var string */
+    private static string $caseValueTooMany = 'value_too_many';
+    #endregion
 
     /**
      * @test
