@@ -165,30 +165,44 @@ class Linqinp
     }
 
     /**
-     * @param callable $func
+     * @param callable|null $func
      * @return mixed
      */
-    public function first(callable $func): mixed
+    public function first(?callable $func = null): mixed
     {
         return $this->doFirst($func, false);
     }
 
     /**
-     * @param callable $func
+     * @param callable|null $func
      * @return mixed
      */
-    public function firstOrDefault(callable $func): mixed
+    public function firstOrDefault(?callable $func = null): mixed
     {
         return $this->doFirst($func, true);
     }
 
     /**
-     * @param callable $func
+     * @param callable|null $func
      * @param bool $allowEmpty
      * @return mixed
      */
-    private function doFirst(callable $func, bool $allowEmpty): mixed
+    private function doFirst(?callable $func, bool $allowEmpty): mixed
     {
+        if ($func === null) {
+            $tmp = $this->toArray();
+            if (empty($tmp)) {
+                if ($allowEmpty) {
+                    return null;
+                }
+
+                throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
+            }
+
+
+            return array_shift($tmp);
+        }
+
         foreach ($this->target as $key => $value) {
             $tmp = $func($value, $key);
 

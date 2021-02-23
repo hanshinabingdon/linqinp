@@ -563,10 +563,16 @@ class LinqinpTest extends TestCase
         $ex03 = null;
         $set03 = [[$seed03, $func03], $ex03];
 
+        $seed04 = [0, 1, 2, null];
+        $func04 = null;
+        $ex04 = 0;
+        $set04 = [[$seed04, $func04], $ex04];
+
         return [
             [$set01],
             [$set02],
             [$set03],
+            [$set04],
         ];
     }
 
@@ -674,11 +680,17 @@ class LinqinpTest extends TestCase
         $ex04 = null;
         $set04 = [[$seed04, $func04], $ex04];
 
+        $seed05 = [];
+        $func05 = null;
+        $ex05 = null;
+        $set05 = [[$seed05, $func05], $ex05];
+
         return [
             [$set01],
             [$set02],
             [$set03],
             [$set04],
+            [$set05],
         ];
     }
 
