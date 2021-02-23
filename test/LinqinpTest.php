@@ -224,12 +224,22 @@ class LinqinpTest extends TestCase
     public function where(array $set): void
     {
         list($case, $expected) = $set;
+
         list($seed, $func) = $case;
+        list($exValue, $exErrorClass, $exErrorMessage) = $expected;
+
+        if ($exErrorClass !== null) {
+            $this->expectException($exErrorClass);
+        }
+
+        if ($exErrorMessage !== null) {
+            $this->expectExceptionMessage($exErrorMessage);
+        }
 
         $result = Linqinp::from($seed)
             ->where($func)
             ->toArray();
-        $this->assertSame($expected, $result);
+        $this->assertSame($exValue, $result);
     }
 
     /**
@@ -237,12 +247,19 @@ class LinqinpTest extends TestCase
      */
     public function whereProvider(): array
     {
+        $seed00 = [];
+        $func00 = function (int $x) {
+            return $x > 1;
+        };
+        $ex00 = [];
+        $set00 = $this->createCase($seed00, $func00, $ex00);
+
         $seed01 = [1, 2, 3];
         $func01 = function (int $x) {
             return $x > 1;
         };
         $ex01 = [1 => 2, 2 => 3];
-        $set01 = [[$seed01, $func01], $ex01];
+        $set01 = $this->createCase($seed01, $func01, $ex01);
 
         $seed02 = [10 => 'a', 11 => 'b', 12 => 'c'];
         $func02 = function (string $x, int $y) {
@@ -252,7 +269,7 @@ class LinqinpTest extends TestCase
             11 => "b",
             12 => "c"
         ];
-        $set02 = [[$seed02, $func02], $ex02];
+        $set02 = $this->createCase($seed02, $func02, $ex02);
 
         $seed03 = [100 => 10, 111 => 11];
         $func03 = function (int $x, int &$y) {
@@ -260,78 +277,40 @@ class LinqinpTest extends TestCase
             return true;
         };
         $ex03 = [1000 => 10, 1221 => 11];
-        $set03 = [[$seed03, $func03], $ex03];
+        $set03 = $this->createCase($seed03, $func03, $ex03);
 
-        $seed04 = [100 => 10, 111 => 11];
-        $func04 = function () {
-            return false;
-        };
-        $ex04 = [];
-        $set04 = [[$seed04, $func04], $ex04];
-
-        return [
-            [$set01],
-            [$set02],
-            [$set03],
-            [$set04],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider whereErrorProvider
-     * @param array $set
-     * @return void
-     */
-    public function whereError(array $set): void
-    {
-        list($case, $ex) = $set;
-
-        list($exErrorClass, $exErrorMessage) = $ex;
-
-        $this->expectException($exErrorClass);
-        $this->expectExceptionMessage($exErrorMessage);
-
-        list($seed, $func) = $case;
-
-        Linqinp::from($seed)
-            ->where($func)
-            ->toArray();
-    }
-
-    /**
-     * @return array
-     */
-    public function whereErrorProvider(): array
-    {
-        $seed01 = [1, 2, 3];
-        $func01 = function (int $x, int &$y) {
+        $seed04 = [1, 2, 3];
+        $func04 = function (int $x, int &$y) {
             $y = $x * $y * 0;
             return true;
         };
-        $exErrorClass01 = InvalidArgumentException::class;
-        $exErrorMessage01 = LinqinpLiteral::$errorKeyDuplicate;
-        $set01 = [
-            [$seed01, $func01],
-            [$exErrorClass01, $exErrorMessage01]
-        ];
+        $exEC04 = InvalidArgumentException::class;
+        $exEM04 = LinqinpLiteral::$errorKeyDuplicate;
+        $set04 = $this->createCase($seed04, $func04, null, $exEC04, $exEM04);
 
-        $seed02 = [1, 2, 3];
-        $func02 = function (int $x) {
+        $seed05 = [100 => 10, 111 => 11];
+        $func05 = function () {
+            return false;
+        };
+        $ex05 = [];
+        $set05 = $this->createCase($seed05, $func05, $ex05);
+
+        $seed06 = [1, 2, 3];
+        $func06 = function (int $x) {
             return $x * 0 + 1;
         };
-        $exErrorClass02 = TypeError::class;
-        $exErrorMessage02 = LinqinpLiteral::$errorCallableReturnTypeBool;
-
-        $set02 = [
-            [$seed02, $func02],
-            [$exErrorClass02, $exErrorMessage02]
-        ];
-
+        $exEC06 = TypeError::class;
+        $exEM06 = LinqinpLiteral::$errorCallableReturnTypeBool;
+        $set06 = $this->createCase($seed06, $func06, null, $exEC06, $exEM06);
 
         return [
-            [$set01],
-            [$set02]
+            self::$caseEmpty => [$set00],
+            self::$caseUseValue => [$set01],
+            self::$caseUseKey => [$set02],
+            self::$caseModifyKey => [$set03],
+            self::$caseDuplicateKey => [$set04],
+            self::$caseValueNothing => [$set05],
+            self::$caseReturnTypeIncorrect => [$set06],
         ];
     }
 
