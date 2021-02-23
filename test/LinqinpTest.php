@@ -39,6 +39,9 @@ class LinqinpTest extends TestCase
     private static string $caseReturnTypeIncorrect = 'return_type_incorrect';
 
     /** @var string */
+    private static string $caseReturnValueNull = 'return_value_null';
+
+    /** @var string */
     private static string $caseValueNothing = 'value_nothing';
 
     /** @var string */
