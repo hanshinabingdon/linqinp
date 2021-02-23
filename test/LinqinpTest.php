@@ -113,6 +113,24 @@ class LinqinpTest extends TestCase
     }
 
     /**
+     * @param array $seed
+     * @param callable|null $func
+     * @param mixed $exValue
+     * @param string|null $exErrorClass
+     * @param string|null $exErrorMessage
+     * @return array[]
+     */
+    private function createCase(
+        array $seed,
+        ?callable $func,
+        mixed $exValue,
+        ?string $exErrorClass = null,
+        ?string $exErrorMessage = null,
+    ): array {
+        return [[$seed, $func], [$exValue, $exErrorClass, $exErrorMessage]];
+    }
+
+    /**
      * @test
      * @param array $set
      * @return void
@@ -121,12 +139,22 @@ class LinqinpTest extends TestCase
     public function select(array $set): void
     {
         list($case, $expected) = $set;
+
         list($seed, $func) = $case;
+        list($exValue, $exErrorClass, $exErrorMessage) = $expected;
+
+        if ($exErrorClass !== null) {
+            $this->expectException($exErrorClass);
+        }
+
+        if ($exErrorMessage !== null) {
+            $this->expectExceptionMessage($exErrorMessage);
+        }
 
         $result = Linqinp::from($seed)
             ->select($func)
             ->toArray();
-        $this->assertSame($expected, $result);
+        $this->assertSame($exValue, $result);
     }
 
     /**
@@ -134,12 +162,19 @@ class LinqinpTest extends TestCase
      */
     public function selectProvider(): array
     {
+        $seed00 = [];
+        $func00 = function (int $x) {
+            return $x + 1;
+        };
+        $ex00 = [];
+        $set00 = $this->createCase($seed00, $func00, $ex00);
+
         $seed01 = [1, 2];
         $func01 = function (int $x) {
             return $x + 1;
         };
         $ex01 = [2, 3];
-        $set01 = [[$seed01, $func01], $ex01];
+        $set01 = $this->createCase($seed01, $func01, $ex01);;
 
         $seed02 = [10 => 'a', 11 => 'b'];
         $func02 = function (string $x, int $key) {
@@ -149,7 +184,7 @@ class LinqinpTest extends TestCase
             10 => "The value is a. The key is 10.",
             11 => "The value is b. The key is 11."
         ];
-        $set02 = [[$seed02, $func02], $ex02];
+        $set02 = $this->createCase($seed02, $func02, $ex02);
 
         $seed03 = ['key1' => 'value1', 'key2' => 'value2'];
         $func03 = function (string $x, string &$y) {
@@ -160,58 +195,23 @@ class LinqinpTest extends TestCase
             'new key1' => "The value is new value1. The key is new key1.",
             'new key2' => "The value is new value2. The key is new key2."
         ];
-        $set03 = [[$seed03, $func03], $ex03];
+        $set03 = $this->createCase($seed03, $func03, $ex03);
 
-        return [
-            [$set01],
-            [$set02],
-            [$set03],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider selectErrorProvider
-     * @param array $set
-     * @return void
-     */
-    public function selectError(array $set): void
-    {
-        list($case, $ex) = $set;
-
-        list($exErrorClass, $exErrorMessage) = $ex;
-
-        $this->expectException($exErrorClass);
-        $this->expectExceptionMessage($exErrorMessage);
-
-        list($seed, $func) = $case;
-
-        Linqinp::from($seed)
-            ->select($func)
-            ->toArray();
-    }
-
-    /**
-     * @return array
-     */
-    public function selectErrorProvider(): array
-    {
-        $seed01 = [1, 2, 3];
-        $func01 = function (int $x, int &$y) {
+        $seed04 = [1, 2, 3];
+        $func04 = function (int $x, int &$y) {
             $y = $y * 0;
             return $x;
         };
-
-        $exErrorClass01 = InvalidArgumentException::class;
-        $exErrorMessage01 = LinqinpLiteral::$errorKeyDuplicate;
-
-        $set01 = [
-            [$seed01, $func01],
-            [$exErrorClass01, $exErrorMessage01]
-        ];
+        $exEC04 = InvalidArgumentException::class;
+        $exEM04 = LinqinpLiteral::$errorKeyDuplicate;
+        $set04 = $this->createCase($seed04, $func04, null, $exEC04, $exEM04);
 
         return [
-            [$set01]
+            self::$caseEmpty => [$set00],
+            self::$caseUseValue => [$set01],
+            self::$caseUseKey => [$set02],
+            self::$caseModifyKey => [$set03],
+            self::$caseDuplicateKey => [$set04],
         ];
     }
 
