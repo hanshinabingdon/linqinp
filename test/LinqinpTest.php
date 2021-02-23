@@ -79,27 +79,27 @@ class LinqinpTest extends TestCase
      */
     public function fromProvider(): array
     {
-        $case01 = [];
+        $case00 = [];
+        $expected00 = new ArrayIterator($case00);
+        $set00 = [$case00, $expected00];
+
+        $case01 = [1];
         $expected01 = new ArrayIterator($case01);
         $set01 = [$case01, $expected01];
 
-        $case02 = [1];
-        $expected02 = new ArrayIterator($case02);
-        $set02 = [$case02, $expected02];
+        $case10 = new EmptyIterator();
+        $ex10 = new EmptyIterator();
+        $set10 = [$case10, $ex10];
 
-        $case03 = new EmptyIterator();
-        $ex03 = new EmptyIterator();
-        $set03 = [$case03, $ex03];
-
-        $case04 = $this->createGenerator(2);
-        $ex04 = $this->createGenerator(2);
-        $set04 = [$case04, $ex04];
+        $case11 = $this->createGenerator(2);
+        $ex11 = $this->createGenerator(2);
+        $set11 = [$case11, $ex11];
 
         return [
-            'empty_array' => [$set01],
-            'array' => [$set02],
-            'empty_generator' => [$set03],
-            'generator' => [$set04],
+            'empty_array' => [$set00],
+            'array' => [$set01],
+            'empty_generator' => [$set10],
+            'generator' => [$set11],
         ];
     }
 
