@@ -19,6 +19,20 @@ use TypeError;
 class LinqinpTest extends TestCase
 {
     /**
+     * --- case_list ---
+     * empty
+     * use_value
+     * use_key
+     * use_both
+     * modify_key
+     * duplicate_key
+     * return_type_incorrect
+     * value_nothing
+     * value_too_many
+     * ---
+     */
+
+    /**
      * @test
      * @dataProvider fromProvider
      * @param array $set
