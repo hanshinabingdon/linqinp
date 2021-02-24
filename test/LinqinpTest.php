@@ -326,11 +326,21 @@ class LinqinpTest extends TestCase
     public function single(array $set): void
     {
         list($case, $expected) = $set;
+
         list($seed, $func) = $case;
+        list($exValue, $exErrorClass, $exErrorMessage) = $expected;
+
+        if ($exErrorClass !== null) {
+            $this->expectException($exErrorClass);
+        }
+
+        if ($exErrorMessage !== null) {
+            $this->expectExceptionMessage($exErrorMessage);
+        }
 
         $result = Linqinp::from($seed)
             ->single($func);
-        $this->assertSame($expected, $result);
+        $this->assertSame($exValue, $result);
     }
 
     /**
@@ -338,99 +348,67 @@ class LinqinpTest extends TestCase
      */
     public function singleProvider(): array
     {
+        $seed00 = [];
+        $func00 = function (int $x) {
+            return $x > 1 && $x < 3;
+        };
+        $exEC = InvalidArgumentException::class;
+        $exEM = LinqinpLiteral::$errorNoValue;
+        $set00 = $this->createCase($seed00, $func00, null, $exEC, $exEM);
+
         $seed01 = [1, 2, 3];
         $func01 = function (int $x) {
             return $x > 1 && $x < 3;
         };
         $ex01 = 2;
-        $set01 = [[$seed01, $func01], $ex01];
+        $set01 = $this->createCase($seed01, $func01, $ex01);
 
         $seed02 = [10 => 'a', 11 => 'b', 12 => 'c'];
         $func02 = function (string $x, int $y) {
             return is_string($x) && $y > 11;
         };
         $ex02 = 'c';
-        $set02 = [[$seed02, $func02], $ex02];
+        $set02 = $this->createCase($seed02, $func02, $ex02);
 
         $seed03 = [null, 1, 2];
         $func03 = function (?int $x) {
             return $x === null;
         };
         $ex03 = null;
-        $set03 = [[$seed03, $func03], $ex03];
+        $set03 = $this->createCase($seed03, $func03, $ex03);
 
-        return [
-            [$set01],
-            [$set02],
-            [$set03],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider singleErrorProvider
-     * @param array $set
-     * @return void
-     */
-    public function singleError(array $set): void
-    {
-        list($case, $ex) = $set;
-
-        list($exErrorClass, $exErrorMessage) = $ex;
-
-        $this->expectException($exErrorClass);
-        $this->expectExceptionMessage($exErrorMessage);
-
-        list($seed, $func) = $case;
-
-        Linqinp::from($seed)
-            ->single($func);
-    }
-
-    /**
-     * @return array
-     */
-    public function singleErrorProvider(): array
-    {
-        $seed01 = [1, 2, 3];
-        $func01 = function (int $x, int $y) {
+        $seed04 = [1, 2, 3];
+        $func04 = function (int $x, int $y) {
             return $x + $y;
         };
-        $exErrorClass01 = TypeError::class;
-        $exErrorMessage01 = LinqinpLiteral::$errorCallableReturnTypeBool;
-        $set01 = [
-            [$seed01, $func01],
-            [$exErrorClass01, $exErrorMessage01]
-        ];
+        $exEC04 = TypeError::class;
+        $exEM04 = LinqinpLiteral::$errorCallableReturnTypeBool;
+        $set04 = $this->createCase($seed04, $func04, null, $exEC04, $exEM04);
 
-        $seed02 = [1, 2, 3];
-        $func02 = function (int $x) {
+        $seed05 = [1, 2, 3];
+        $func05 = function (int $x) {
             return is_int($x);
         };
-        $exErrorClass02 = InvalidArgumentException::class;
-        $exErrorMessage02 = LinqinpLiteral::$errorTooMuchValues;
+        $exEC05 = InvalidArgumentException::class;
+        $exEM05 = LinqinpLiteral::$errorTooMuchValues;
+        $set05 = $this->createCase($seed05, $func05, null, $exEC05, $exEM05);
 
-        $set02 = [
-            [$seed02, $func02],
-            [$exErrorClass02, $exErrorMessage02]
-        ];
-
-        $seed03 = [1, 2, 3];
-        $func03 = function (int $x, int $y) {
+        $seed06 = [1, 2, 3];
+        $func06 = function (int $x, int $y) {
             return !is_int($x) && !is_int($y);
         };
-        $exErrorClass03 = InvalidArgumentException::class;
-        $exErrorMessage03 = LinqinpLiteral::$errorNoValue;
-
-        $set03 = [
-            [$seed03, $func03],
-            [$exErrorClass03, $exErrorMessage03]
-        ];
+        $exEC06 = InvalidArgumentException::class;
+        $exEM06 = LinqinpLiteral::$errorNoValue;
+        $set06 = $this->createCase($seed06, $func06, null, $exEC06, $exEM06);
 
         return [
-            [$set01],
-            [$set02],
-            [$set03],
+            self::$caseEmpty => [$set00],
+            self::$caseUseValue => [$set01],
+            self::$caseUseKey => [$set02],
+            self::$caseReturnValueNull => [$set03],
+            self::$caseReturnTypeIncorrect => [$set04],
+            self::$caseValueNothing =>[$set05],
+            self::$caseValueTooMany => [$set06],
         ];
     }
 
