@@ -199,7 +199,6 @@ class Linqinp
                 throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
             }
 
-
             return array_shift($tmp);
         }
 
