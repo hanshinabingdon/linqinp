@@ -94,8 +94,12 @@ class LinqinpTest extends TestCase
         $ex10 = new EmptyIterator();
         $set10 = [$case10, $ex10];
 
-        $case11 = $this->createGenerator(2);
-        $ex11 = $this->createGenerator(2);
+        $func = function ($x) {
+            yield $x;
+        };
+
+        $case11 = $func(2);
+        $ex11 = $func(2);
         $set11 = [$case11, $ex11];
 
         return [
@@ -104,15 +108,6 @@ class LinqinpTest extends TestCase
             'empty_generator' => [$set10],
             'generator' => [$set11],
         ];
-    }
-
-    /**
-     * @param mixed $value
-     * @return Generator
-     */
-    public function createGenerator(mixed $value): Generator
-    {
-        yield $value;
     }
 
     /**
