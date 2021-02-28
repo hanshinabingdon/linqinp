@@ -222,4 +222,54 @@ class Linqinp
 
         throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
     }
+
+    /**
+     * @param callable|null $func
+     * @return mixed
+     */
+    public function last(?callable $func = null): mixed
+    {
+        return $this->doLast($func, false);
+    }
+
+    /**
+     * @param callable|null $func
+     * @param bool $allowEmpty
+     * @return mixed
+     */
+    private function doLast(?callable $func, bool $allowEmpty): mixed
+    {
+        $tmp = array_reverse($this->toArray(), true);
+        if ($func === null) {
+            if (empty($tmp)) {
+                if ($allowEmpty) {
+                    return null;
+                }
+
+                throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
+            }
+
+            return array_shift($tmp);
+        }
+
+        foreach ($tmp as $key => $value) {
+            $funcValue = $func($value, $key);
+
+            if (!is_bool($funcValue)) {
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnTypeBool);
+            }
+
+            if (!$funcValue) {
+                continue;
+            }
+
+            return $value;
+        }
+
+        if ($allowEmpty) {
+            return null;
+        }
+
+        throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
+    }
 }
