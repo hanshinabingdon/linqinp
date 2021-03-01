@@ -234,6 +234,15 @@ class Linqinp
 
     /**
      * @param callable|null $func
+     * @return mixed
+     */
+    public function lastOrDefault(?callable $func = null): mixed
+    {
+        return $this->doLast($func, true);
+    }
+
+    /**
+     * @param callable|null $func
      * @param bool $allowEmpty
      * @return mixed
      */
