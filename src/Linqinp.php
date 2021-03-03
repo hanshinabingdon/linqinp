@@ -281,4 +281,32 @@ class Linqinp
 
         throw new InvalidArgumentException(LinqinpLiteral::$errorNoValue);
     }
+
+    /**
+     * @param callable|null $func
+     * @return int
+     */
+    public function count(?callable $func = null): int
+    {
+        if ($func === null) {
+            return iterator_count($this->target);
+        }
+
+        $count = 0;
+        foreach ($this->target as $key => $value) {
+            $tmp = $func($value, $key);
+
+            if (!is_bool($tmp)) {
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnTypeBool);
+            }
+
+            if (!$tmp) {
+                continue;
+            }
+
+            $count++;
+        }
+
+        return $count;
+    }
 }
