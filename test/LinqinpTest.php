@@ -32,6 +32,9 @@ class LinqinpTest extends TestCase
     private static string $caseModifyKey = 'modify_key';
 
     /** @var string */
+    private static string $caseCallableNull = 'callable_null';
+
+    /** @var string */
     private static string $caseDuplicateKey = 'duplicateKey';
 
     /** @var string */
@@ -574,22 +577,30 @@ class LinqinpTest extends TestCase
         $set05 = $this->createCase($seed05, $func05, null, $exEC05, $exEM05);
 
         $seed06 = [1, 2, 3];
-        $func06 = function (int $x, int $y) {
+        $func06 = function (int $x) {
+            return is_int($x);
+        };
+        $ex06 = 1;
+        $set06 = $this->createCase($seed06, $func06, $ex06);
+
+        $seed07 = [1, 2, 3];
+        $func07 = function (int $x, int $y) {
             return !is_int($x) && !is_int($y);
         };
-        $exEC06 = InvalidArgumentException::class;
-        $exEM06 = LinqinpLiteral::$errorNoValue;
+        $exEC07 = InvalidArgumentException::class;
+        $exEM07 = LinqinpLiteral::$errorNoValue;
 
-        $set06 = $this->createCase($seed06, $func06, null, $exEC06, $exEM06);
+        $set07 = $this->createCase($seed07, $func07, null, $exEC07, $exEM07);
 
         return [
             self::$caseEmpty => [$set00],
             self::$caseUseValue => [$set01],
             self::$caseUseKey => [$set02],
             self::$caseReturnValueNull => [$set03],
-            self::$caseReturnTypeIncorrect => [$set04],
-            self::$caseValueNothing => [$set05],
+            self::$caseCallableNull => [$set04],
+            self::$caseReturnTypeIncorrect => [$set05],
             self::$caseValueTooMany => [$set06],
+            self::$caseValueNothing => [$set07],
         ];
     }
 
@@ -664,21 +675,29 @@ class LinqinpTest extends TestCase
         $set05 = $this->createCase($seed05, $func05, $ex05);
 
         $seed06 = [1, 2, 3];
-        $func06 = function (int $x, int $y) {
+        $func06 = function (int $x) {
+            return is_int($x);
+        };
+        $ex06 = 1;
+        $set06 = $this->createCase($seed06, $func06, $ex06);
+
+        $seed07 = [1, 2, 3];
+        $func07 = function (int $x, int $y) {
             return $x + $y;
         };
-        $exEC06 = TypeError::class;
-        $exEM06 = LinqinpLiteral::$errorCallableReturnTypeBool;
-        $set06 = $this->createCase($seed06, $func06, null, $exEC06, $exEM06);
+        $exEC07 = TypeError::class;
+        $exEM07 = LinqinpLiteral::$errorCallableReturnTypeBool;
+        $set07 = $this->createCase($seed07, $func07, null, $exEC07, $exEM07);
 
         return [
             self::$caseEmpty => [$set00],
             self::$caseUseValue => [$set01],
             self::$caseUseKey => [$set02],
             self::$caseReturnValueNull => [$set03],
-            self::$caseReturnTypeIncorrect => [$set04],
-            self::$caseValueNothing => [$set05],
-            self::$caseValueTooMany => [$set06],
+            self::$caseCallableNull => [$set04],
+            self::$caseReturnTypeIncorrect => [$set05],
+            self::$caseValueNothing => [$set06],
+            self::$caseValueTooMany => [$set07],
         ];
     }
 
@@ -757,22 +776,30 @@ class LinqinpTest extends TestCase
         $set05 = $this->createCase($seed05, $func05, null, $exEC05, $exEM05);
 
         $seed06 = [1, 2, 3];
-        $func06 = function (int $x, int $y) {
+        $func06 = function (int $x) {
+            return is_int($x);
+        };
+        $ex06 = 3;
+        $set06 = $this->createCase($seed06, $func06, $ex06);
+
+        $seed07 = [1, 2, 3];
+        $func07 = function (int $x, int $y) {
             return !is_int($x) && !is_int($y);
         };
-        $exEC06 = InvalidArgumentException::class;
-        $exEM06 = LinqinpLiteral::$errorNoValue;
+        $exEC07 = InvalidArgumentException::class;
+        $exEM07 = LinqinpLiteral::$errorNoValue;
 
-        $set06 = $this->createCase($seed06, $func06, null, $exEC06, $exEM06);
+        $set07 = $this->createCase($seed07, $func07, null, $exEC07, $exEM07);
 
         return [
             self::$caseEmpty => [$set00],
             self::$caseUseValue => [$set01],
             self::$caseUseKey => [$set02],
             self::$caseReturnValueNull => [$set03],
-            self::$caseReturnTypeIncorrect => [$set04],
-            self::$caseValueNothing => [$set05],
-            self::$caseValueTooMany => [$set06],
+            self::$caseCallableNull => [$set04],
+            self::$caseReturnTypeIncorrect => [$set05],
+            self::$caseValueNothing => [$set06],
+            self::$caseValueTooMany => [$set07],
         ];
     }
 
@@ -847,6 +874,32 @@ class LinqinpTest extends TestCase
         $exEC05 = TypeError::class;
         $exEM05 = LinqinpLiteral::$errorCallableReturnTypeBool;
         $set05 = $this->createCase($seed05, $func05, null, $exEC05, $exEM05);
+
+        $seed06 = [1, 2, 3];
+        $func06 = function (int $x) {
+            return is_int($x);
+        };
+        $ex06 = 3;
+        $set06 = $this->createCase($seed06, $func06, $ex06);
+
+        $seed07 = [1, 2, 3];
+        $func07 = function (int $x, int $y) {
+            return !is_int($x) && !is_int($y);
+        };
+
+        $set07 = $this->createCase($seed07, $func07, null);
+
+        return [
+            self::$caseEmpty => [$set00],
+            self::$caseUseValue => [$set01],
+            self::$caseUseKey => [$set02],
+            self::$caseReturnValueNull => [$set03],
+            self::$caseCallableNull => [$set04],
+            self::$caseReturnTypeIncorrect => [$set05],
+            self::$caseValueNothing => [$set06],
+            self::$caseValueTooMany => [$set07],
+        ];
+    }
 
         $seed06 = [1, 2, 3];
         $func06 = function (int $x, int $y) {
