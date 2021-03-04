@@ -309,4 +309,31 @@ class Linqinp
 
         return $count;
     }
+
+    /**
+     * @param callable|null $func
+     * @return bool
+     */
+    public function any(?callable $func = null): bool
+    {
+        if ($func === null) {
+            return iterator_count($this->target) > 0;
+        }
+
+        foreach ($this->target as $key => $value) {
+            $tmp = $func($value, $key);
+
+            if (!is_bool($tmp)) {
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnTypeBool);
+            }
+
+            if (!$tmp) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }
