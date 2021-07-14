@@ -540,7 +540,7 @@ class LinqinpTest extends TestCase
         $ex00 = null;
         $exEC00 = InvalidArgumentException::class;
         $exEM00 = LinqinpLiteral::$errorNoValue;
-        $set00 = $this->createCase($seed00, $func00, null, $exEC00, $exEM00);
+        $set00 = $this->createCase($seed00, $func00, $ex00, $exEC00, $exEM00);
 
         $seed01 = [1, 2, 3, 4];
         $func01 = function (int $x) {
@@ -739,7 +739,7 @@ class LinqinpTest extends TestCase
         $ex00 = null;
         $exEC00 = InvalidArgumentException::class;
         $exEM00 = LinqinpLiteral::$errorNoValue;
-        $set00 = $this->createCase($seed00, $func00, null, $exEC00, $exEM00);
+        $set00 = $this->createCase($seed00, $func00, $ex00, $exEC00, $exEM00);
 
         $seed01 = [1, 2, 3, 4];
         $func01 = function (int $x) {
