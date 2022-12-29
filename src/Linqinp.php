@@ -336,4 +336,30 @@ class Linqinp
 
         return false;
     }
+
+    /**
+     * @param callable $func
+     * @return bool
+     */
+    public function all(callable $func): bool
+    {
+        $counter = 0;
+        foreach ($this->target as $key => $value) {
+            $counter++;
+            $tmp = $func($value, $key);
+            if (!is_bool($tmp)) {
+                throw new TypeError(LinqinpLiteral::$errorCallableReturnTypeBool);
+            }
+
+            if (!$tmp) {
+                return false;
+            }
+        }
+
+        if ($counter === 0) {
+            return false;
+        }
+
+        return true;
+    }
 }
