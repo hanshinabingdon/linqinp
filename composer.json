@@ -1,5 +1,11 @@
 {
-  "name": "hanshinabingdon/linqinp",
+  "name": "linqinp/linqinp",
+  "description": "linqinp is for using something like C# LINQ in php.",
+  "keywords": [
+    "linq",
+    "C#"
+  ],
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "taito",
