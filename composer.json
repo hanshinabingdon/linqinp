@@ -1,9 +1,9 @@
 {
   "name": "linqinp/linqinp",
-  "description": "linqinp is for using something like C# LINQ in php.",
+  "description": "linqinp is for using something like C Sharp LINQ in php.",
   "keywords": [
     "linq",
-    "C sharp"
+    "C Sharp"
   ],
   "license": "Apache-2.0",
   "authors": [
